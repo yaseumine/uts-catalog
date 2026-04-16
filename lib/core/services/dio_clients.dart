@@ -41,7 +41,7 @@ class DioClient {
       ),
     );
 
-    // Interceptor 2: Auto-inject Bearer Token
+    // Interceptor 2 Auto-inject Bearer Token
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
