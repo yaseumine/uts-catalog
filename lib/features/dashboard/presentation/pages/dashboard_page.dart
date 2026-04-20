@@ -1,3 +1,9 @@
+import 'package:catalog/core/routes/app_routes.dart';
+import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
+import 'package:catalog/features/dashboard/presentation/providers/product_providers.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
   @override

@@ -1,3 +1,13 @@
+import 'dart:async';
+
+import 'package:catalog/core/routes/app_routes.dart';
+import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
+import 'package:catalog/features/auth/presentation/widgets/custom_button.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../widgets/auth_header.dart';
+
 class VerifyEmailPage extends StatefulWidget {
   const VerifyEmailPage({super.key});
   @override

@@ -11,6 +11,10 @@ class ProductProvider extends ChangeNotifier {
   List<ProductModel> _products = [];
   String? _error;
 
+  ProductStatus get status => _status;
+  List<ProductModel> get products => _products;
+  String? get error => _error;
+
   Future<void> fetchProducts() async {
     // 1. Set status loading → UI tampilkan spinner
     _status = ProductStatus.loading;

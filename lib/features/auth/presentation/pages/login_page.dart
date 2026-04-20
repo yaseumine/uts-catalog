@@ -1,3 +1,4 @@
+import 'package:catalog/core/routes/app_routes.dart';
 import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
 import 'package:catalog/features/auth/presentation/widgets/auth_header.dart';
 import 'package:catalog/features/auth/presentation/widgets/custom_button.dart';
@@ -6,7 +7,8 @@ import 'package:catalog/features/auth/presentation/widgets/divider_with_text.dar
 import 'package:catalog/features/auth/presentation/widgets/google_sign_in_button.dart';
 import 'package:catalog/features/auth/presentation/widgets/loading_overlay.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
