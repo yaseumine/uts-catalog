@@ -17,7 +17,7 @@ enum AuthStatus {
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
   // ─── State ───────────────────────────────────────────────
   AuthStatus _status = AuthStatus.initial;
@@ -166,15 +166,11 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> loginWithGoogle() async {
     _setLoading();
     try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        _setError('Login Google dibatalkan');
-        return false;
-      }
+      await _googleSignIn.initialize();
+      final googleUser = await _googleSignIn.authenticate();
 
-      final googleAuth = await googleUser.authentication;
+      final googleAuth = googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
       final userCred = await _auth.signInWithCredential(credential);
