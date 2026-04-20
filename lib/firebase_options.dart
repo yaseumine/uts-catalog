@@ -23,11 +23,20 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -41,48 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyD41MRWi_qq0W2LGahovfd83fw6NUxNe1I',
-    appId: '1:35518635173:web:1bc047e97ab4164a69c14c',
-    messagingSenderId: '35518635173',
-    projectId: 'farmingauth-8ae5a',
-    authDomain: 'farmingauth-8ae5a.firebaseapp.com',
-    storageBucket: 'farmingauth-8ae5a.firebasestorage.app',
-    measurementId: 'G-KHBQTXNGY6',
+    apiKey: 'AIzaSyDK9wXAjvkF1vamlyvwlh5NH4wq4t41dEg',
+    appId: '1:1039821112582:web:dfd309593b2bcd979bca87',
+    messagingSenderId: '1039821112582',
+    projectId: 'testauthetication-3c2c8',
+    authDomain: 'testauthetication-3c2c8.firebaseapp.com',
+    storageBucket: 'testauthetication-3c2c8.firebasestorage.app',
+    measurementId: 'G-E3QBP641FK',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBg6watGIyLBKbys2a5JH_yOK84JeCZAlQ',
-    appId: '1:35518635173:android:07301b40bfbc7f0a69c14c',
-    messagingSenderId: '35518635173',
-    projectId: 'farmingauth-8ae5a',
-    storageBucket: 'farmingauth-8ae5a.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCRbjwuHhDVmZvUJUi542rQBlGySdDQKKk',
-    appId: '1:35518635173:ios:35d2fae6e30aaf3469c14c',
-    messagingSenderId: '35518635173',
-    projectId: 'farmingauth-8ae5a',
-    storageBucket: 'farmingauth-8ae5a.firebasestorage.app',
-    iosBundleId: 'com.org.catalog',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyCRbjwuHhDVmZvUJUi542rQBlGySdDQKKk',
-    appId: '1:35518635173:ios:35d2fae6e30aaf3469c14c',
-    messagingSenderId: '35518635173',
-    projectId: 'farmingauth-8ae5a',
-    storageBucket: 'farmingauth-8ae5a.firebasestorage.app',
-    iosBundleId: 'com.org.catalog',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyD41MRWi_qq0W2LGahovfd83fw6NUxNe1I',
-    appId: '1:35518635173:web:940d00988510910469c14c',
-    messagingSenderId: '35518635173',
-    projectId: 'farmingauth-8ae5a',
-    authDomain: 'farmingauth-8ae5a.firebaseapp.com',
-    storageBucket: 'farmingauth-8ae5a.firebasestorage.app',
-    measurementId: 'G-LL8SBZVRCH',
+    apiKey: 'AIzaSyBbgigP-jC0iwwqERKwkUuDP0_ZCWc8pKI',
+    appId: '1:1039821112582:android:a4f0d69c1299c7a39bca87',
+    messagingSenderId: '1039821112582',
+    projectId: 'testauthetication-3c2c8',
+    storageBucket: 'testauthetication-3c2c8.firebasestorage.app',
   );
 }
