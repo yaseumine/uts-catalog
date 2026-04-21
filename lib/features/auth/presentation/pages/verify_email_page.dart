@@ -32,14 +32,28 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   }
 
   // Polling: cek setiap 5 detik apakah email sudah diverifikasi
+  // Polling: cek setiap 5 detik apakah email sudah diverifikasi
   void _startPolling() {
     _timer = Timer.periodic(const Duration(seconds: 5), (_) async {
       if (!mounted) return;
       final auth = context.read<AuthProvider>();
+
       final success = await auth.checkEmailVerified();
+
       if (success && mounted) {
         _timer?.cancel();
         Navigator.pushReplacementNamed(context, AppRouter.dashboard);
+      } else if (auth.status == AuthStatus.error && mounted) {
+        // TANGKAP ERROR: Kalau Golang mati/gagal konek, hentikan timer & kasih notif!
+        _timer?.cancel();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              auth.errorMessage ?? 'Gagal menghubungi server Backend',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     });
   }

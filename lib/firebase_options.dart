@@ -66,4 +66,5 @@ class DefaultFirebaseOptions {
     projectId: 'testauthetication-3c2c8',
     storageBucket: 'testauthetication-3c2c8.firebasestorage.app',
   );
+
 }

@@ -106,7 +106,7 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> _verifyTokenToBackend() async {
     try {
       // Ambil Firebase ID Token (expired tiap 1 jam)
-      final firebaseToken = await _firebaseUser?.getIdToken();
+      final firebaseToken = await _firebaseUser?.getIdToken(true);
 
       // POST ke backend — DioClient interceptor sudah handle logging
       final response = await DioClient.instance.post(
