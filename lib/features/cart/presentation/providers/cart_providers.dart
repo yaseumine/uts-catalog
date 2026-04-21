@@ -8,7 +8,7 @@ class CartProvider extends ChangeNotifier {
 
   Map<int, CartItemModel> get items => _items;
 
-  // 1. Fitur Tambah Barang [cite: 2011]
+  // 1. Fitur Tambah Barang
   void addToCart(ProductModel product) {
     if (_items.containsKey(product.id)) {
       // Kalau barang udah ada, tambah jumlahnya (quantity)
@@ -20,7 +20,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners(); // WAJIB ada sesuai soal UTS [cite: 2023]
   }
 
-  // 2. Fitur Hapus Barang [cite: 2011]
+  // 2. Fitur Hapus Barang
   void removeFromCart(int productId) {
     _items.remove(productId);
     notifyListeners();
