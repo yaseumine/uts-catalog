@@ -1,6 +1,7 @@
 import 'package:catalog/core/routes/app_routes.dart';
 import 'package:catalog/core/themes/app_theme.dart';
 import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
+import 'package:catalog/features/cart/presentation/providers/cart_providers.dart';
 import 'package:catalog/features/dashboard/presentation/providers/product_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,6 +23,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
       ],
       child: const MyApp(),
     ),
