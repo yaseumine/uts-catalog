@@ -1,6 +1,8 @@
 import 'package:catalog/core/routes/app_routes.dart';
 import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
+import 'package:catalog/features/cart/presentation/providers/cart_providers.dart';
 import 'package:catalog/features/dashboard/presentation/providers/product_providers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +43,40 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
         actions: [
+          // STACK UNTUK ICON KERANJANG + ANGKA BADGE
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.shopping_cart),
+                onPressed: () => Navigator.pushNamed(context, '/cart'),
+              ),
+              // Menampilkan jumlah angka di atas ikon keranjang
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Consumer<CartProvider>(
+                  builder: (_, cart, __) => cart.totalItems > 0
+                      ? Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '${cart.totalItems}',
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ),
+            ],
+          ),
+          // TOMBOL LOGOUT
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
@@ -144,22 +180,47 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.shade50,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              p.category,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Color(0xFF1565C0),
+                          // ROW UNTUK KATEGORI & TOMBOL ADD TO CART
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade50,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  p.category,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: Color(0xFF1565C0),
+                                  ),
+                                ),
                               ),
-                            ),
+                              // TOMBOL ADD TO CART
+                              InkWell(
+                                onTap: () {
+                                  context.read<CartProvider>().addToCart(p);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${p.name} masuk ke keranjang!',
+                                      ),
+                                      duration: const Duration(seconds: 1),
+                                    ),
+                                  );
+                                },
+                                child: const Icon(
+                                  Icons.add_shopping_cart,
+                                  color: Color(0xFF1565C0),
+                                  size: 20,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
