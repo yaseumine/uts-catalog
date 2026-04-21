@@ -11,14 +11,15 @@ import 'firebase_options.dart';
 import 'core/services/secure_storage.dart';
 
 void main() async {
-  // 1. Pastikan binding Flutter sudah siap [cite: 173, 1451]
+  // 1. Pastikan binding Flutter sudah siap
+
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 2. Inisialisasi Firebase sebelum aplikasi dijalankan [cite: 174-177, 1452]
+  // 2. Inisialisasi Firebase sebelum aplikasi dijalankan
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
-    // 3. Daftarkan semua Provider di level paling atas [cite: 179-185, 1454-1461, 1694-1698]
+    // 3. Daftarkan semua Provider di level paling atas
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
@@ -36,21 +37,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pasar Malam App', // [cite: 1700]
-      debugShowCheckedModeBanner: false, // [cite: 1701]
-      // 4. Gunakan tema yang sudah dibuat di core [cite: 1702]
+      title: 'Tani Kuy',
+      debugShowCheckedModeBanner: false,
+      // 4. Gunakan tema yang sudah dibuat di core
       theme: AppTheme.light,
 
       // Tampilkan splash sebagai halaman awal untuk pengecekan token.
       home: const SplashPage(),
 
-      // 6. Daftarkan semua rute dari AppRouter [cite: 1704]
+      // 6. Daftarkan semua rute dari AppRouter
       routes: AppRouter.routes,
     );
   }
 }
 
-// 7. SplashPage: Halaman awal untuk mengecek token tersimpan [cite: 1709-1731]
+// 7. SplashPage: Halaman awal untuk mengecek token tersimpan
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
   @override
@@ -65,27 +66,24 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _checkAuth() async {
-    // Beri sedikit jeda untuk animasi splash [cite: 1721]
+    // Beri sedikit jeda untuk animasi splash
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
 
-    // Cek apakah ada token di penyimpanan aman [cite: 1723]
+    // Cek apakah ada token di penyimpanan aman
     final token = await SecureStorageService.getToken();
 
-    // Jika token ada, langsung ke Dashboard. Jika tidak, ke Login [cite: 1724]
+    // Jika token ada, langsung ke Dashboard. Jika tidak, ke Login
+
     final route = token != null ? AppRouter.dashboard : AppRouter.login;
 
     if (mounted) {
-      Navigator.pushReplacementNamed(context, route); // [cite: 1725]
+      Navigator.pushReplacementNamed(context, route);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(), // [cite: 1729]
-      ),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
