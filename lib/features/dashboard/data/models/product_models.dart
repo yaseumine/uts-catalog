@@ -16,11 +16,21 @@ class ProductModel extends Equatable {
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-    id: json['id'] as int,
-    name: json['name'] as String,
-    price: (json['price'] as num).toDouble(),
-    imageUrl: json['image_url'] as String,
-    category: json['category'] as String,
+    // Kalau 'id' kosong, coba cari 'ID', kalau masih kosong kasih nilai 0
+    id: json['id'] ?? json['ID'] ?? 0,
+
+    // Ubah ke teks dengan aman, kalau kosong kasih nama default
+    name: json['name']?.toString() ?? 'Produk Tanpa Nama',
+
+    // Amankan angka desimal, mau Golang ngirim huruf atau angka tetep aman
+    price: double.tryParse(json['price']?.toString() ?? '0') ?? 0.0,
+
+    // Kalau gambar kosong, kasih gambar abu-abu biar UI gak hancur
+    imageUrl:
+        json['image_url']?.toString() ?? 'https://via.placeholder.com/150',
+
+    // Kalau kategori kosong, masukin ke Uncategorized
+    category: json['category']?.toString() ?? 'Uncategorized',
   );
 
   @override

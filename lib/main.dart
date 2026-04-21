@@ -39,8 +39,8 @@ class MyApp extends StatelessWidget {
       // 4. Gunakan tema yang sudah dibuat di core [cite: 1702]
       theme: AppTheme.light,
 
-      // 5. Atur rute awal ke SplashPage untuk pengecekan login [cite: 1703]
-      initialRoute: AppRouter.splash,
+      // Tampilkan splash sebagai halaman awal untuk pengecekan token.
+      home: const SplashPage(),
 
       // 6. Daftarkan semua rute dari AppRouter [cite: 1704]
       routes: AppRouter.routes,
