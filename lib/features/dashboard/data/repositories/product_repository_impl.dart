@@ -1,29 +1,19 @@
-import 'package:catalog/core/constants/api_constrants.dart';
 import 'package:catalog/core/services/dio_clients.dart';
-import 'package:catalog/features/dashboard/data/models/product_models.dart';
-import 'package:catalog/features/dashboard/domain/repositories/product_repository.dart';
+import 'package:catalog/features/cart/data/models/checkout_model.dart';
 
-class ProductRepositoryImpl implements ProductRepository {
-  @override
-  Future<List<ProductModel>> getProducts({
-    int page = 1,
-    int limit = 10,
-    String? category,
-  }) async {
-    final response = await DioClient.instance.get(
-      ApiConstants.products,
-      queryParameters: {'page': page, 'limit': limit, 'category': category},
-    );
+class CartRepositoryImpl {
+  Future<bool> processCheckout(CheckoutRequestModel data) async {
+    try {
+      // Asumsi endpoint dari dosen adalah /orders atau /checkout
+      // Ganti '/orders' di bawah ini kalau endpoint Golang-nya beda ya!
+      final response = await DioClient.instance.post(
+        '/orders',
+        data: data.toJson(),
+      );
 
-    final List<dynamic> data = response.data['data'];
-    return data.map((e) => ProductModel.fromJson(e)).toList();
-  }
-
-  @override
-  Future<ProductModel> getProductById(int id) async {
-    final response = await DioClient.instance.get(
-      '${ApiConstants.products}/$id',
-    );
-    return ProductModel.fromJson(response.data['data']);
+      return response.statusCode == 200 || response.statusCode == 201;
+    } catch (e) {
+      rethrow;
+    }
   }
 }
