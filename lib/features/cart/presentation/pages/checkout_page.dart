@@ -9,6 +9,7 @@ class CheckoutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cart = context.watch<CartProvider>();
     final cartItems = cart.items.values.toList();
+    final isCartEmpty = cartItems.isEmpty;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Checkout')),
@@ -22,7 +23,6 @@ class CheckoutPage extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            // Tampilkan list barang yang mau dibeli
             ...cartItems.map(
               (item) => Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
@@ -48,7 +48,7 @@ class CheckoutPage extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Rp ${cart.totalPrice.toStringAsFixed(0)}', // [cite: 2016]
+                  'Rp ${cart.totalPrice.toStringAsFixed(0)}',
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -58,7 +58,7 @@ class CheckoutPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 48),
-            // Tombol Simulasi Bayar
+
             SizedBox(
               width: double.infinity,
               height: 52,
@@ -67,29 +67,60 @@ class CheckoutPage extends StatelessWidget {
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.white,
                 ),
-                onPressed: () {
-                  // SIMULASI SUKSES [cite: 2018]
-                  // 1. Kosongkan keranjang
-                  context.read<CartProvider>().clearCart();
+                onPressed: cart.isLoading || isCartEmpty
+                    ? null
+                    : () async {
+                        final success = await context
+                            .read<CartProvider>()
+                            .checkout(
+                              address: 'Tangerang, Banten',
+                              notes: 'Tolong dibungkus rapi ya',
+                            );
 
-                  // 2. Tampilkan notifikasi sukses
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Pembayaran Berhasil! Pesanan diproses.'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+                        if (!context.mounted) return;
 
-                  // 3. Kembali ke halaman Dashboard
-                  Navigator.popUntil(
-                    context,
-                    ModalRoute.withName('/dashboard'),
-                  );
-                },
-                child: const Text(
-                  'Bayar Sekarang',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Pembayaran berhasil! Pesanan masuk ke database.',
+                              ),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+
+                          Navigator.popUntil(
+                            context,
+                            ModalRoute.withName('/dashboard'),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                context.read<CartProvider>().errorMessage ??
+                                    'Checkout gagal',
+                              ),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      },
+                child: cart.isLoading
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text(
+                        isCartEmpty ? 'Keranjang Kosong' : 'Bayar Sekarang',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
           ],

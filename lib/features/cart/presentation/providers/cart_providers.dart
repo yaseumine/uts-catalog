@@ -1,12 +1,20 @@
 import 'package:catalog/features/cart/data/models/cart_item_model.dart';
+import 'package:catalog/features/cart/data/models/checkout_model.dart';
 import 'package:catalog/features/dashboard/data/models/product_models.dart';
+import 'package:catalog/features/dashboard/data/repositories/product_repository_impl.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider extends ChangeNotifier {
   // Menyimpan daftar barang di keranjang. Key-nya adalah ID produk.
   final Map<int, CartItemModel> _items = {};
+  final CartRepositoryImpl _repository = CartRepositoryImpl();
+
+  bool _isLoading = false;
+  String? _errorMessage;
 
   Map<int, CartItemModel> get items => _items;
+  bool get isLoading => _isLoading;
+  String? get errorMessage => _errorMessage;
 
   // 1. Fitur Tambah Barang
   void addToCart(ProductModel product) {
@@ -17,7 +25,7 @@ class CartProvider extends ChangeNotifier {
       // Kalau barang baru, masukkan ke keranjang
       _items[product.id] = CartItemModel(product: product);
     }
-    notifyListeners(); // WAJIB ada sesuai soal UTS [cite: 2023]
+    notifyListeners();
   }
 
   // 2. Fitur Hapus Barang
@@ -59,5 +67,47 @@ class CartProvider extends ChangeNotifier {
   void clearCart() {
     _items.clear();
     notifyListeners();
+  }
+
+  Future<bool> checkout({required String address, String notes = ''}) async {
+    if (_items.isEmpty) return false;
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final requestData = CheckoutRequestModel(
+        items: _items.values
+            .map(
+              (item) => CheckoutItemModel(
+                productId: item.product.id,
+                quantity: item.quantity,
+                price: item.product.price,
+              ),
+            )
+            .toList(),
+        totalAmount: totalPrice,
+        shippingAddress: address,
+        notes: notes,
+      );
+
+      final success = await _repository.processCheckout(requestData);
+
+      if (success) {
+        _items.clear();
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      }
+
+      throw Exception('Gagal memproses pesanan di server');
+    } catch (_) {
+      _errorMessage =
+          'Gagal checkout: periksa koneksi atau pastikan backend menyala';
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
   }
 }
