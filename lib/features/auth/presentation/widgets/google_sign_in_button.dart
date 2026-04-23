@@ -1,3 +1,4 @@
+import 'package:catalog/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -15,31 +16,33 @@ class GoogleSignInButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.white,
-          side: BorderSide(color: Colors.grey.shade300),
+          backgroundColor: AppColors.surface,
+          side: const BorderSide(color: AppColors.primaryDark, width: 2.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4.0),
           ),
+          elevation: 0.0,
         ),
         child: isLoading
             ? const SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: CircularProgressIndicator(
+                  strokeWidth: 3.0,
+                  color: AppColors.primary,
+                ),
               )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo Google — download dari: fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg
-                  // Image.asset('assets/icons/google.svg', height: 22),
                   SvgPicture.asset('assets/icons/google.svg', height: 22),
                   const SizedBox(width: 12),
                   const Text(
                     'Lanjutkan dengan Google',
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ],
