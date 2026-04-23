@@ -1,3 +1,4 @@
+import 'package:catalog/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AuthHeader extends StatelessWidget {
@@ -16,30 +17,49 @@ class AuthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveIconColor = iconColor ?? AppColors.accent;
+
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: (iconColor ?? const Color(0xFF1565C0)).withOpacity(0.1),
-            shape: BoxShape.circle,
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(4.0),
+            border: Border.all(
+              color: AppColors.primaryDark,
+              width: 2.0,
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: AppColors.primaryDark,
+                offset: Offset(4, 4),
+                blurRadius: 0.0,
+              ),
+            ],
           ),
-          child: Icon(
-            icon,
-            size: 48,
-            color: iconColor ?? const Color(0xFF1565C0),
-          ),
+          child: Icon(icon, size: 48, color: effectiveIconColor),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
+
         Text(
           title,
-          style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
         const SizedBox(height: 8),
+
         Text(
           subtitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          style: const TextStyle(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
