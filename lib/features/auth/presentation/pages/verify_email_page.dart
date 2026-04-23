@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:catalog/core/constants/app_colors.dart';
 import 'package:catalog/core/routes/app_routes.dart';
 import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
 import 'package:catalog/features/auth/presentation/widgets/custom_button.dart';
@@ -32,7 +33,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   }
 
   // Polling: cek setiap 5 detik apakah email sudah diverifikasi
-  // Polling: cek setiap 5 detik apakah email sudah diverifikasi
   void _startPolling() {
     _timer = Timer.periodic(const Duration(seconds: 5), (_) async {
       if (!mounted) return;
@@ -50,8 +50,17 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           SnackBar(
             content: Text(
               auth.errorMessage ?? 'Gagal menghubungi server Backend',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.error, // Pakai merah bata
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+              side: const BorderSide(color: AppColors.primaryDark, width: 2.0),
+            ),
           ),
         );
       }
@@ -78,7 +87,18 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Email verifikasi sudah dikirim ulang')),
+      SnackBar(
+        content: const Text(
+          'Email verifikasi sudah dikirim ulang',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: AppColors.accent, // Pakai hijau sukses
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+          side: const BorderSide(color: AppColors.primaryDark, width: 2.0),
+        ),
+      ),
     );
   }
 
@@ -87,6 +107,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     final user = context.watch<AuthProvider>().firebaseUser;
 
     return Scaffold(
+      backgroundColor: AppColors.background, // Background kertas krem
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -96,29 +117,42 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               // Widget reusable: AuthHeader
               const AuthHeader(
                 icon: Icons.mark_email_unread_outlined,
-                title: 'Verifikasi Email Kamu',
+                title:
+                    'Surat Menyurat', // Diganti biar lebih nyambung sama game
                 subtitle:
-                    'Kami sudah mengirim link verifikasi ke email di bawah ini.',
-                iconColor: Colors.orange,
+                    'Pak Pos sudah mengirim surat ke alamat di bawah ini.',
+                iconColor: AppColors.primary, // Icon coklat kayu
               ),
               const SizedBox(height: 24),
 
-              // Tampilkan email user
+              // Kotak penampil email (Diubah jadi gaya Plang Kayu)
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
+                  color: AppColors.surface, // Kertas terang
+                  borderRadius: BorderRadius.circular(4.0), // Sudut kaku
+                  border: Border.all(
+                    color: AppColors.primaryDark,
+                    width: 2.0,
+                  ), // Border kayu
+                  boxShadow: const [
+                    // Efek shadow 3D
+                    BoxShadow(
+                      color: AppColors.primaryDark,
+                      offset: Offset(4, 4),
+                      blurRadius: 0.0,
+                    ),
+                  ],
                 ),
                 child: Text(
                   user?.email ?? '-',
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary, // Teks coklat tua
                   ),
                 ),
               ),
@@ -131,22 +165,28 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                   const SizedBox(
                     width: 16,
                     height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3.0,
+                      color: AppColors.primary, // Loading coklat
+                    ),
                   ),
                   const SizedBox(width: 12),
-                  Text(
-                    'Menunggu konfirmasi...',
-                    style: TextStyle(color: Colors.grey.shade600),
+                  const Text(
+                    'Menunggu balasan Pak Pos...',
+                    style: TextStyle(
+                      color: AppColors.textSecondary, // Teks coklat pudar
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 32),
 
-              // Tombol kirim ulang dengan cooldown
+              // Tombol kirim ulang dengan cooldown (Otomatis dapet tema dari CustomButton)
               CustomButton(
                 label: _resendCooldown
                     ? 'Kirim Ulang ($_countdown detik)'
-                    : 'Kirim Ulang Email',
+                    : 'Kirim Ulang Surat',
                 variant: ButtonVariant.outlined,
                 onPressed: _resendCooldown ? null : _resendEmail,
               ),
@@ -154,7 +194,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
 
               // Tombol logout
               CustomButton(
-                label: 'Ganti Akun / Logout',
+                label: 'Ganti Akun / Keluar',
                 variant: ButtonVariant.text,
                 onPressed: () {
                   context.read<AuthProvider>().logout();
