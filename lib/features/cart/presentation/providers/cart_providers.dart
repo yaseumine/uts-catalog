@@ -1,11 +1,10 @@
 import 'package:catalog/features/cart/data/models/cart_item_model.dart';
 import 'package:catalog/features/cart/data/models/checkout_model.dart';
+import 'package:catalog/features/cart/data/repositories/cart_repository_impl.dart';
 import 'package:catalog/features/dashboard/data/models/product_models.dart';
-import 'package:catalog/features/dashboard/data/repositories/product_repository_impl.dart';
 import 'package:flutter/material.dart';
 
 class CartProvider extends ChangeNotifier {
-  // Menyimpan daftar barang di keranjang. Key-nya adalah ID produk.
   final Map<int, CartItemModel> _items = {};
   final CartRepositoryImpl _repository = CartRepositoryImpl();
 
@@ -16,16 +15,23 @@ class CartProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  // 1. Fitur Tambah Barang
-  void addToCart(ProductModel product) {
-    if (_items.containsKey(product.id)) {
-      // Kalau barang udah ada, tambah jumlahnya (quantity)
-      _items[product.id]!.quantity += 1;
+  // 1. Fitur Tambah Barang (LOGIKA DIPERBAIKI)
+  Future<void> addToCart(ProductModel product) async {
+    // Tembak ke Backend Golang dulu!
+    final success = await _repository.addToCartBackend(product.id, 1);
+
+    // Kalau Golang bilang OKE (sukses masuk database), baru update UI di layar
+    if (success) {
+      if (_items.containsKey(product.id)) {
+        _items[product.id]!.quantity += 1;
+      } else {
+        _items[product.id] = CartItemModel(product: product);
+      }
+      notifyListeners();
     } else {
-      // Kalau barang baru, masukkan ke keranjang
-      _items[product.id] = CartItemModel(product: product);
+      // Print error di terminal kalau gagal
+      debugPrint("Gagal menambahkan ${product.name} ke database Golang!");
     }
-    notifyListeners();
   }
 
   // 2. Fitur Hapus Barang
@@ -34,7 +40,6 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Kurangi jumlah barang (opsional tapi bagus buat UI)
   void decreaseQuantity(int productId) {
     if (!_items.containsKey(productId)) return;
     if (_items[productId]!.quantity > 1) {
@@ -45,7 +50,7 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 3. Fitur Total Harga [cite: 2012, 2016]
+  // 3. Fitur Total Harga
   double get totalPrice {
     double total = 0.0;
     _items.forEach((key, cartItem) {
@@ -54,7 +59,6 @@ class CartProvider extends ChangeNotifier {
     return total;
   }
 
-  // Fitur Total Item (buat badge di icon keranjang)
   int get totalItems {
     int count = 0;
     _items.forEach((key, cartItem) {
@@ -63,12 +67,12 @@ class CartProvider extends ChangeNotifier {
     return count;
   }
 
-  // 4. Simulasi Checkout (Kosongkan keranjang setelah sukses) [cite: 2018]
   void clearCart() {
     _items.clear();
     notifyListeners();
   }
 
+  // 4. Fitur Checkout
   Future<bool> checkout({required String address, String notes = ''}) async {
     if (_items.isEmpty) return false;
 

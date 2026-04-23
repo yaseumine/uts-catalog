@@ -1,6 +1,8 @@
 import 'package:catalog/features/cart/data/models/checkout_model.dart';
 
 abstract class CartRepository {
-  // Kontrak fungsi checkout yang harus ada di implementasi
   Future<bool> processCheckout(CheckoutRequestModel data);
+
+  // WAJIB DITAMBAHIN DI SINI JUGA BOS!
+  Future<bool> addToCartBackend(int productId, int quantity);
 }
