@@ -1,3 +1,4 @@
+import 'package:catalog/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 enum ButtonVariant { primary, outlined, text }
@@ -20,24 +21,34 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPrimary = variant == ButtonVariant.primary;
+    final contentColor = isPrimary ? Colors.white : AppColors.textPrimary;
+
     final child = isLoading
-        ? const SizedBox(
+        ? SizedBox(
             width: 20,
             height: 20,
             child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white,
+              strokeWidth: 3,
+              color: contentColor,
             ),
           )
         : Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[icon!, const SizedBox(width: 8)],
+              if (icon != null) ...[
+                IconTheme(
+                  data: IconThemeData(color: contentColor),
+                  child: icon!,
+                ),
+                const SizedBox(width: 8),
+              ],
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
+                  color: contentColor,
                 ),
               ),
             ],
@@ -50,27 +61,32 @@ class CustomButton extends StatelessWidget {
         ButtonVariant.primary => ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF1565C0),
+            backgroundColor: AppColors.accent,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(4.0),
+              side: const BorderSide(color: AppColors.primaryDark, width: 2.0),
             ),
-            elevation: 2,
+            elevation: 0.0,
           ),
           child: child,
         ),
+
         ButtonVariant.outlined => OutlinedButton(
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: Color(0xFF1565C0), width: 1.5),
+            foregroundColor: AppColors.textPrimary,
+            side: const BorderSide(color: AppColors.primaryDark, width: 2.0),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(4.0),
             ),
           ),
           child: child,
         ),
+
         ButtonVariant.text => TextButton(
           onPressed: isLoading ? null : onPressed,
+          style: TextButton.styleFrom(foregroundColor: AppColors.primary),
           child: child,
         ),
       },
