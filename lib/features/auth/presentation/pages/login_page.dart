@@ -1,3 +1,4 @@
+import 'package:catalog/core/constants/app_colors.dart';
 import 'package:catalog/core/routes/app_routes.dart';
 import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
 import 'package:catalog/features/auth/presentation/widgets/auth_header.dart';
@@ -34,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
 
   /// Handler untuk login email/password
   Future<void> _loginEmail() async {
+    // Jangan lanjut request jika form belum valid.
     if (!_formKey.currentState!.validate()) return;
 
     final auth = context.read<AuthProvider>();
@@ -42,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       password: _passCtrl.text,
     );
 
+    // Hindari akses context setelah widget unmounted.
     if (!mounted) return;
     _handleLoginResult(ok, auth);
   }
@@ -50,11 +53,15 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _loginGoogle() async {
     final auth = context.read<AuthProvider>();
     final ok = await auth.loginWithGoogle();
+    // Hindari akses context setelah widget unmounted.
     if (!mounted) return;
     _handleLoginResult(ok, auth);
   }
 
-  /// Routing berdasarkan hasil login
+  /// Routing berdasarkan hasil login:
+  /// - sukses -> dashboard
+  /// - email belum verifikasi -> verify email
+  /// - gagal lainnya -> tampilkan snackbar error
   void _handleLoginResult(bool ok, AuthProvider auth) {
     if (ok) {
       Navigator.pushReplacementNamed(context, AppRouter.dashboard);
@@ -63,8 +70,19 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.errorMessage ?? 'Login gagal'),
-          backgroundColor: Colors.red,
+          content: Text(
+            auth.errorMessage ?? 'Login gagal',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+            side: const BorderSide(color: AppColors.primaryDark, width: 2.0),
+          ),
         ),
       );
     }
@@ -75,7 +93,18 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Reset Password'),
+        backgroundColor: AppColors.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
+          side: const BorderSide(color: AppColors.primaryDark, width: 2.0),
+        ),
+        title: const Text(
+          'Reset Password',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         content: CustomTextField(
           label: 'Email',
           hint: 'Email terdaftar',
@@ -85,16 +114,31 @@ class _LoginPageState extends State<LoginPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
+            child: const Text(
+              'Batal',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0),
+                side: const BorderSide(
+                  color: AppColors.primaryDark,
+                  width: 2.0,
+                ),
+              ),
+              elevation: 0.0,
+            ),
             onPressed: () async {
+              // Kirim email reset password lalu tutup dialog jika masih mounted.
               await FirebaseAuth.instance.sendPasswordResetEmail(
                 email: ctrl.text.trim(),
               );
               if (context.mounted) Navigator.pop(context);
             },
-            child: const Text('Kirim'),
+            child: const Text('Kirim', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -109,6 +153,7 @@ class _LoginPageState extends State<LoginPage> {
       isLoading: isLoading,
       message: 'Masuk ke akun...',
       child: Scaffold(
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -118,9 +163,10 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   const SizedBox(height: 32),
                   const AuthHeader(
-                    icon: Icons.lock_open_outlined,
-                    title: 'Selamat Datang',
-                    subtitle: 'Masuk ke akun Anda untuk melanjutkan',
+                    icon: Icons.storefront_outlined,
+                    title: "Pierre's Store",
+                    subtitle:
+                        'Beli benih, pupuk, dan penuhi kebutuhan ladangmu',
                   ),
                   const SizedBox(height: 32),
                   CustomTextField(
@@ -128,7 +174,10 @@ class _LoginPageState extends State<LoginPage> {
                     hint: 'contoh@email.com',
                     controller: _emailCtrl,
                     keyboardType: TextInputType.emailAddress,
-                    prefixIcon: const Icon(Icons.email_outlined),
+                    prefixIcon: const Icon(
+                      Icons.email_outlined,
+                      color: AppColors.primary,
+                    ),
                     validator: (v) {
                       if (v?.isEmpty ?? true) return 'Email wajib diisi';
                       if (!EmailValidator.validate(v!)) {
@@ -143,10 +192,14 @@ class _LoginPageState extends State<LoginPage> {
                     hint: 'Masukkan password',
                     controller: _passCtrl,
                     obscureText: !_showPass,
-                    prefixIcon: const Icon(Icons.lock_outline),
+                    prefixIcon: const Icon(
+                      Icons.lock_outline,
+                      color: AppColors.primary,
+                    ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _showPass ? Icons.visibility_off : Icons.visibility,
+                        color: AppColors.primary,
                       ),
                       onPressed: () => setState(() => _showPass = !_showPass),
                     ),
@@ -158,7 +211,13 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () => _showForgotPasswordDialog(context),
-                      child: const Text('Lupa Password?'),
+                      child: const Text(
+                        'Lupa Password?',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -168,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
                     isLoading: isLoading,
                   ),
                   const SizedBox(height: 20),
-                  const DividerWithText(text: 'atau masuk dengan'),
+                  const DividerWithText(text: 'Atau masuk dengan'),
                   const SizedBox(height: 20),
                   GoogleSignInButton(
                     onPressed: _loginGoogle,
@@ -178,8 +237,12 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Belum punya akun? '),
+                      const Text(
+                        'Belum punya akun? ',
+                        style: TextStyle(color: AppColors.textPrimary),
+                      ),
                       GestureDetector(
+                        // Pakai replacement agar halaman login tidak menumpuk di stack.
                         onTap: () => Navigator.pushReplacementNamed(
                           context,
                           AppRouter.register,
@@ -187,8 +250,9 @@ class _LoginPageState extends State<LoginPage> {
                         child: const Text(
                           'Daftar',
                           style: TextStyle(
-                            color: Color(0xFF1565C0),
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
