@@ -1,3 +1,4 @@
+import 'package:catalog/core/constants/app_colors.dart';
 import 'package:catalog/core/routes/app_routes.dart';
 import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
 import 'package:catalog/features/cart/presentation/providers/cart_providers.dart';
@@ -16,7 +17,6 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    // Fetch produk begitu halaman dibuka
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProductProvider>().fetchProducts();
     });
@@ -28,30 +28,40 @@ class _DashboardPageState extends State<DashboardPage> {
     final product = context.watch<ProductProvider>();
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Dashboard', style: TextStyle(fontSize: 18)),
+            const Text(
+              "Pierre's Store",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
             Text(
-              'Halo, ${auth.firebaseUser?.displayName ?? 'User'}!',
+              'Halo, ${auth.firebaseUser?.displayName ?? 'Petani'}!',
               style: const TextStyle(
                 fontSize: 13,
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.w500,
+                color: Colors.white70,
               ),
             ),
           ],
         ),
         actions: [
-          // STACK UNTUK ICON KERANJANG + ANGKA BADGE
           Stack(
             alignment: Alignment.center,
             children: [
               IconButton(
-                icon: const Icon(Icons.shopping_cart),
+                icon: const Icon(
+                  Icons.shopping_basket_outlined,
+                  color: Colors.white,
+                ),
                 onPressed: () => Navigator.pushNamed(context, '/cart'),
               ),
-              // Menampilkan jumlah angka di atas ikon keranjang
               Positioned(
                 right: 8,
                 top: 8,
@@ -59,14 +69,16 @@ class _DashboardPageState extends State<DashboardPage> {
                   builder: (_, cart, __) => cart.totalItems > 0
                       ? Container(
                           padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
+                          decoration: BoxDecoration(
+                            color: AppColors.error,
                             shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 1.5),
                           ),
                           child: Text(
                             '${cart.totalItems}',
                             style: const TextStyle(
                               fontSize: 10,
+                              fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
@@ -76,9 +88,8 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ],
           ),
-          // TOMBOL LOGOUT
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () async {
               await auth.logout();
               if (!mounted) return;
@@ -93,9 +104,18 @@ class _DashboardPageState extends State<DashboardPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(),
+              CircularProgressIndicator(
+                color: AppColors.primary,
+                strokeWidth: 4.0,
+              ),
               SizedBox(height: 16),
-              Text('Memuat produk...'),
+              Text(
+                'Menata etalase...',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
         ),
@@ -104,13 +124,30 @@ class _DashboardPageState extends State<DashboardPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const Icon(Icons.error_outline, size: 64, color: AppColors.error),
               const SizedBox(height: 16),
-              Text(product.error ?? 'Terjadi kesalahan'),
+              Text(
+                product.error ?? 'Terjadi kesalahan',
+                style: const TextStyle(color: AppColors.textPrimary),
+              ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                icon: const Icon(Icons.refresh),
-                label: const Text('Coba Lagi'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.accent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4.0),
+                    side: const BorderSide(
+                      color: AppColors.primaryDark,
+                      width: 2.0,
+                    ),
+                  ),
+                  elevation: 0,
+                ),
+                icon: const Icon(Icons.refresh, color: Colors.white),
+                label: const Text(
+                  'Coba Lagi',
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () => product.fetchProducts(),
               ),
             ],
@@ -118,111 +155,180 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
 
         ProductStatus.loaded => RefreshIndicator(
+          color: AppColors.primary,
           onRefresh: () => product.fetchProducts(),
           child: GridView.builder(
             padding: const EdgeInsets.all(16),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.75,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
+              childAspectRatio: 0.70,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
             ),
             itemCount: product.products.length,
             itemBuilder: (context, i) {
               final p = product.products[i];
-              return Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              return Container(
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(4.0),
+                  border: Border.all(color: AppColors.primaryDark, width: 2.0),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: AppColors.primaryDark,
+                      offset: Offset(4, 4),
+                      blurRadius: 0.0,
+                    ),
+                  ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(12),
-                      ),
-                      child: Image.network(
-                        p.imageUrl,
-                        height: 120,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Container(
-                          height: 120,
-                          color: Colors.grey.shade200,
-                          child: const Icon(
-                            Icons.image_not_supported,
-                            size: 40,
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: AppColors.primaryDark,
+                              width: 2.0,
+                            ),
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(2.0),
+                          ),
+                          child: Image.network(
+                            p.imageUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              color: AppColors.background,
+                              child: const Icon(
+                                Icons.image_not_supported,
+                                size: 40,
+                                color: AppColors.border,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            p.name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
+
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              p.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: AppColors.textPrimary,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Rp ${p.price.toStringAsFixed(0)}',
-                            style: const TextStyle(
-                              color: Color(0xFF1565C0),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          // ROW UNTUK KATEGORI & TOMBOL ADD TO CART
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 2,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue.shade50,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  p.category,
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // FIX: Dikembalikan jadi Rp lagi!
+                                Text(
+                                  'Rp ${p.price.toStringAsFixed(0)}',
                                   style: const TextStyle(
-                                    fontSize: 11,
-                                    color: Color(0xFF1565C0),
+                                    color: AppColors.primaryLight,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 14,
                                   ),
                                 ),
-                              ),
-                              // TOMBOL ADD TO CART
-                              InkWell(
-                                onTap: () {
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 4,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primaryDark.withOpacity(
+                                      0.1,
+                                    ),
+                                    border: Border.all(
+                                      color: AppColors.primaryDark,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(2.0),
+                                  ),
+                                  child: Text(
+                                    p.category,
+                                    style: const TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(
+                              width: double.infinity,
+                              height: 32,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.accent,
+                                  padding: EdgeInsets.zero,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(2.0),
+                                    side: const BorderSide(
+                                      color: AppColors.primaryDark,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                onPressed: () {
                                   context.read<CartProvider>().addToCart(p);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        '${p.name} masuk ke keranjang!',
+                                        '${p.name} masuk ke tas!',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                      duration: const Duration(seconds: 1),
+                                      backgroundColor: AppColors.accent,
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: const Duration(
+                                        milliseconds: 1500,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          4.0,
+                                        ),
+                                        side: const BorderSide(
+                                          color: AppColors.primaryDark,
+                                          width: 2.0,
+                                        ),
+                                      ),
                                     ),
                                   );
                                 },
-                                child: const Icon(
-                                  Icons.add_shopping_cart,
-                                  color: Color(0xFF1565C0),
-                                  size: 20,
+                                child: const Text(
+                                  'Beli',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
