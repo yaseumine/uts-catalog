@@ -1,3 +1,4 @@
+import 'package:catalog/core/constants/app_colors.dart';
 import 'package:catalog/features/auth/presentation/providers/auth_provider.dart';
 import 'package:catalog/features/auth/presentation/widgets/auth_header.dart';
 import 'package:catalog/features/auth/presentation/widgets/custom_button.dart';
@@ -48,8 +49,22 @@ class _RegisterPageState extends State<RegisterPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.errorMessage ?? 'Pendaftaran gagal'),
-          backgroundColor: Colors.red,
+          content: Text(
+            auth.errorMessage ?? 'Pendaftaran gagal',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: AppColors.error, // Merah bata ala game
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+            side: const BorderSide(
+              color: AppColors.primaryDark,
+              width: 2.0,
+            ), // Border kayu
+          ),
         ),
       );
     }
@@ -63,6 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
       isLoading: isLoading,
       message: 'Mendaftarkan akun...',
       child: Scaffold(
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -72,16 +88,19 @@ class _RegisterPageState extends State<RegisterPage> {
                 children: [
                   const SizedBox(height: 32),
                   const AuthHeader(
-                    icon: Icons.person_add_alt_1,
-                    title: 'Buat Akun Baru',
-                    subtitle: 'Lengkapi data diri Anda untuk mendaftar',
+                    icon: Icons.badge_outlined, // Icon ID card biar pas
+                    title: 'Warga Baru',
+                    subtitle: 'Buat kartu pelanggan Pierre\'s Store',
                   ),
                   const SizedBox(height: 32),
                   CustomTextField(
                     label: 'Nama Lengkap',
                     hint: 'Masukkan nama lengkap',
                     controller: _nameCtrl,
-                    prefixIcon: const Icon(Icons.person_outline),
+                    prefixIcon: const Icon(
+                      Icons.person_outline,
+                      color: AppColors.primary,
+                    ), // Icon coklat
                     validator: (v) =>
                         (v?.isEmpty ?? true) ? 'Nama wajib diisi' : null,
                   ),
@@ -91,11 +110,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     hint: 'contoh@email.com',
                     controller: _emailCtrl,
                     keyboardType: TextInputType.emailAddress,
-                    prefixIcon: const Icon(Icons.email_outlined),
+                    prefixIcon: const Icon(
+                      Icons.email_outlined,
+                      color: AppColors.primary,
+                    ),
                     validator: (v) {
                       if (v?.isEmpty ?? true) return 'Email wajib diisi';
-                      if (!EmailValidator.validate(v!))
+                      if (!EmailValidator.validate(v!)) {
                         return 'Format email salah';
+                      }
                       return null;
                     },
                   ),
@@ -105,10 +128,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     hint: 'Minimal 8 karakter',
                     controller: _passCtrl,
                     obscureText: !_showPass,
-                    prefixIcon: const Icon(Icons.lock_outline),
+                    prefixIcon: const Icon(
+                      Icons.lock_outline,
+                      color: AppColors.primary,
+                    ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _showPass ? Icons.visibility_off : Icons.visibility,
+                        color: AppColors.primary,
                       ),
                       onPressed: () => setState(() => _showPass = !_showPass),
                     ),
@@ -122,7 +149,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     hint: 'Ulangi password',
                     controller: _pass2Ctrl,
                     obscureText: !_showPass,
-                    prefixIcon: const Icon(Icons.lock_outline),
+                    prefixIcon: const Icon(
+                      Icons.lock_outline,
+                      color: AppColors.primary,
+                    ),
                     validator: (v) =>
                         v != _passCtrl.text ? 'Password tidak cocok' : null,
                   ),
@@ -136,7 +166,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Sudah punya akun? '),
+                      const Text(
+                        'Sudah punya akun? ',
+                        style: TextStyle(color: AppColors.textPrimary),
+                      ),
                       GestureDetector(
                         onTap: () => Navigator.pushReplacementNamed(
                           context,
@@ -145,8 +178,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: const Text(
                           'Masuk',
                           style: TextStyle(
-                            color: Color(0xFF1565C0),
+                            color: AppColors.primary,
                             fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
