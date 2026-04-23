@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+//untuk warna
 
-//aku tambahin ini supaya aku bisa pake tema warna yang konsisten di seluruh aplikasi
 class AppColors {
-  static const Color primary = Color(0xFF1565C0);
-  static const Color primaryLight = Color(0xFF1E88E5);
-  static const Color primaryDark = Color(0xFF0D47A1);
-  static const Color accent = Color(0xFF42A5F5);
+  static const Color primary = Color(0xFF8B5A2B);
+  static const Color primaryLight = Color(0xFFA0522D);
+  static const Color primaryDark = Color(0xFF5C3317);
 
-  static const Color background = Color(0xFFF5F5F5);
-  static const Color surface = Colors.white;
-  static const Color error = Colors.red;
+  static const Color accent = Color(0xFF4CAF50);
 
-  static const Color textPrimary = Color(0xFF212121);
-  static const Color textSecondary = Color(0xFF757575);
-  static const Color textHint = Color(0xFFBDBDBD);
+  static const Color background = Color(0xFFFFF8DC);
+  static const Color surface = Color(0xFFFFFDF5);
+  static const Color error = Color(0xFFD32F2F);
 
-  static const Color divider = Color(0xFFE0E0E0);
-  static const Color border = Color(0xFFE0E0E0);
+  static const Color textPrimary = Color(0xFF3E2723);
+  static const Color textSecondary = Color(0xFF5D4037);
+  static const Color textHint = Color(0xFFA1887F);
+
+  static const Color divider = Color(0xFFD7CCC8);
+  static const Color border = Color(0xFF8D6E63);
 }
