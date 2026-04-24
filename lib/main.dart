@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tani Kuy',
+      title: 'Toko Tani Pierre',
       debugShowCheckedModeBanner: false,
       // 4. Gunakan tema yang sudah dibuat di core
       theme: AppTheme.light,
